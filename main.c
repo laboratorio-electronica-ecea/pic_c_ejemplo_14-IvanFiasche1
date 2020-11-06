@@ -77,9 +77,15 @@ void uart_tx_byte(uint8_t dato);
 /* ------------------------ Implementación de funciones --------------------- */
 void main(void) {                       // Función principal
     char dato_recibido;
+    uint8_t contador[4] = {0,0,0,0};
+    uint8_t cont;
+    
     
     gpio_config();                      // Inicializo las entradas y salidas
     uart_config();                      // Configuro la UART
+    
+    PIN_LED_ROJO = 0;
+    PIN_LED_VERDE = 0;
     
     printf("Sistema inicializado!\r\n");
     printf("---------------------\r\n");
@@ -88,10 +94,90 @@ void main(void) {                       // Función principal
         // Ver este link: https://pbs.twimg.com/media/BafQje7CcAAN5en.jpg
         
         // TODO: Completar las acciones de las teclas
+        // TODO: Completar las acciones de los comandos
+       
         
-        if( uart_rx_byte( &dato_recibido ) ) {
-            // TODO: Completar las acciones de los comandos
+            
+       if (PIN_TEC1 == 0 ){
+           
+           __delay_ms(40);
+       
+           contador [0]++;
+       
+       
+       while(PIN_TEC1 == 0);
+            __delay_ms(40);
         }
+        if (PIN_TEC2 == 0){
+               
+               __delay_ms(40);
+               
+               contador [1]++;
+               
+               while (PIN_TEC2 == 0);
+               
+               __delay_ms(40);
+           }
+        if (PIN_TEC3 == 0)
+        {
+            __delay_ms(40);
+            
+            contador [2]++;
+            
+            while (PIN_TEC3 == 0);
+            
+            __delay_ms(40);
+        }
+        if (PIN_TEC4 == 0)
+        {
+            __delay_ms(40);
+            
+            contador [3]++;
+            
+            __delay_ms(40);
+        }
+            
+            if (uart_rx_byte (&dato_recibido)){
+                
+                if (dato_recibido == 'Q')
+                {
+                printf("---------------------\r\n");
+                
+                
+                printf("TEC1 = %d\r\n", contador[0]);
+                printf("TEC2 = %d\r\n", contador[1]);
+                printf("TEC3 = %d\r\n", contador[2]);
+                printf("TEC4 = %d\r\n", contador[3]);
+                                                          
+                
+                printf("---------------------\r\n");
+                
+                
+                PIN_LED_VERDE = 1;
+                __delay_ms(100);
+                PIN_LED_VERDE = 0; 
+            }
+             if (dato_recibido == 'D')
+             {
+                 for (cont = 0;cont < 4; cont++)
+                     contador [cont] = 0;
+                 
+                 PIN_LED_VERDE = 1;
+                 
+                 __delay_ms(100);
+                 
+                 PIN_LED_VERDE = 0; 
+                 
+             }
+             else {
+                 PIN_LED_ROJO = 1;
+                 
+                 __delay_ms(100);
+                 
+                 PIN_LED_ROJO = 0;
+                 
+             }
+            }
     }
     
     // NO DEBE LLEGAR NUNCA AQUÍ, debido a que este programa se ejecuta
@@ -103,10 +189,35 @@ void main(void) {                       // Función principal
 
 void gpio_config() {    
     // TODO: Completar inicialización de entradas y salidas
+    
+    ANSEL = 0;
+    ANSELH = 0;
+    
+    
+    TRIS_TEC1 = 1;
+    TRIS_TEC2 = 1;
+    TRIS_TEC3 = 1;
+    TRIS_TEC4 = 1;
+    
+    TRIS_LED_ROJO = 0;
+    TRIS_LED_VERDE = 0; 
 }
 
 void uart_config() {
     // TODO: Completa configuración de la UART
+    
+    TXSTAbits.TX9 = 0;
+    TXSTAbits.TXEN = 1;
+    TXSTAbits.SYNC = 0;
+    
+    TXSTAbits.BRGH = 0;
+    BAUDCTLbits.BRG16 = 1;
+    SPBRG = 25;
+    
+    RCSTAbits.SPEN = 1;
+    RCSTAbits.RC9 = 0;
+    RCSTAbits.CREN = 1;
+    
 }
 
 /**
