@@ -1,6 +1,6 @@
 /*
  * Nombre del archivo:   main.c
- * Autor:
+ * Autor: Iván Fiasche 
  *
  * Descripción: 
  *      El sistema debe contar cuantas veces se presiona cada tecla (TEC1, TEC2,
